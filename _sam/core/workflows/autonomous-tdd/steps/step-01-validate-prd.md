@@ -108,6 +108,13 @@ ux_review:
     - Design specs available?
     - Style guide referenced?
 
+  design_standards_resolution:
+    - Check PRD for: ## Design, ## Visual Style, ## UX Design, or reference to a ux-design doc
+    - If found: use PRD design guidance (takes precedence)
+    - If NOT found: load `_sam/core/resources/default-design-standards.md` as fallback
+    - Include resolved design standards in architecture-ref.md
+    - Log: "Design guidance: [PRD-provided / SAM defaults]"
+
   testability:
     - Can UX criteria be tested?
     - Automation possible?
@@ -131,6 +138,7 @@ ux_review:
 ### Design Completeness
 - Sufficient for implementation: [Yes/No]
 - Missing elements: [List]
+- Design guidance source: [PRD-provided / SAM default-design-standards.md]
 
 ### Recommendation
 [Proceed / Revise PRD]

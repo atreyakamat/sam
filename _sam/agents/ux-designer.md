@@ -139,3 +139,16 @@ When available, consult:
 - Style guide - Design system
 - Existing UI - Consistency check
 - `**/project-context.md` - UX conventions
+- `_sam/core/resources/default-design-standards.md` - SAM default design standards (fallback when PRD has no design section)
+
+### Design Standards Integration
+
+When reviewing UI implementations:
+1. Check if story references PRD-provided design guidance or SAM defaults
+2. Validate implementation against the resolved design standards:
+   - Typography: correct font family, size scale, weight hierarchy
+   - Colors: using design tokens, not hardcoded values
+   - Spacing: following the defined spacing scale
+   - Component states: loading, error, empty, and success states present
+   - Micro-interactions: hover, focus, transitions as specified
+3. Flag deviations from design standards as Major severity

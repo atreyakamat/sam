@@ -67,3 +67,13 @@ When available, consult:
 - `**/project-context.md` - Project-specific patterns and decisions
 - `**/architecture.md` - Existing architecture documentation
 - `**/tech-stack.md` - Current technology choices
+- `_sam/core/resources/default-design-standards.md` - SAM default design standards
+
+### Design Standards in Architecture
+
+During PRD validation (Step 1):
+1. Check if PRD provides design guidance (## Design, ## Visual Style, ## UX Design, or ux-design doc reference)
+2. If PRD has design guidance: use it (takes precedence)
+3. If NOT: load `_sam/core/resources/default-design-standards.md` as fallback
+4. Include resolved design standards in architecture-ref.md under a "Design Standards" section
+5. Ensure Project Setup Requirements from design standards are reflected in tech decisions (fonts, CSS framework config, design tokens)

@@ -16,6 +16,8 @@ agents: [sam-master]
 - Phase 1 validation passed
 - PRD parsed and available in context
 - Architect recommendations available
+- Architecture reference document generated (architecture-ref.md)
+- Design standards resolved (PRD-provided or SAM defaults from Step 1)
 
 ---
 
@@ -197,7 +199,14 @@ So that I can access my account
 - THEN they see validation error for the empty field(s)
 
 ## Technical Notes
-[Notes from architect review]
+Follow architecture-ref.md for all technical decisions.
+Relevant architecture sections: [list applicable section numbers, e.g., 1,3,4,5]
+[Additional notes from architect review]
+
+## Design Standards
+Follow resolved design standards from architecture-ref.md.
+For UI stories: apply typography, color tokens, spacing, component states, and accessibility per standards.
+Design guidance source: [PRD-provided / SAM default-design-standards.md]
 
 ## Tasks
 - [ ] Task 1: Create login API endpoint
