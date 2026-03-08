@@ -4,17 +4,17 @@ This release introduces native integration for **GitHub Copilot Chat**, expandin
 
 ## 🚀 Enhancements
 
-### 1. Repository-Wide Custom Instructions
-SAM now generates a `.github/copilot-instructions.md` file. This file provides GitHub Copilot with:
-- A high-level overview of the SAM orchestrator and agent team.
-- Explicit instructions on how to adopt each agent's persona.
-- Automatic linkage to detailed agent definitions.
+### 1. New `copilot-integration/` Folder
+SAM now generates a dedicated `copilot-integration/` directory in your project root. This folder contains:
+- `instructions.md`: High-level instructions for GitHub Copilot.
+- `agents/`: Detailed instruction files for every SAM agent.
+- `references/`: Project design standards and workflows.
 
-### 2. Detailed Agent Personas in `.github/copilot/`
-All SAM agents (Atlas, Dyna, Titan, etc.) are now exported as standalone Markdown files within your repository's `.github/copilot/` directory. This allows Copilot to reference the exact identity, responsibilities, and communication style of each agent.
+### 2. Manual Invocation System
+Since GitHub Copilot doesn't always automatically load root files, users can now point Copilot specifically to the `copilot-integration/` folder for full context.
 
 ### 3. Integrated TDD Pipeline for Copilot
-The autonomous TDD workflow is now accessible via Copilot Chat. By pointing Copilot to `.github/copilot/sam-tdd-pipeline.md`, you can run full RED-GREEN-REFACTOR cycles directly in your editor.
+The autonomous TDD workflow is now accessible via Copilot Chat. By pointing Copilot to `copilot-integration/agents/sam-tdd-pipeline.md`, you can run full RED-GREEN-REFACTOR cycles directly in your editor.
 
 ### 4. Reference System
 Following the pattern established for Gemini and Antigravity, the Copilot integration includes a `references/` directory containing:

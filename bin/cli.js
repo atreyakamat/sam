@@ -581,12 +581,12 @@ Provide a PRD or feature description to start the autonomous TDD pipeline.
 }
 
 function generateCopilotSkills(samDir, targetDir) {
-  const githubDir = path.join(targetDir, '.github');
-  const copilotDir = path.join(githubDir, 'copilot');
+  const copilotDir = path.join(targetDir, 'copilot-integration');
+  const agentsDir = path.join(copilotDir, 'agents');
   const referencesDir = path.join(copilotDir, 'references');
 
-  if (!fs.existsSync(referencesDir)) {
-    fs.mkdirSync(referencesDir, { recursive: true });
+  if (!fs.existsSync(agentsDir)) {
+    fs.mkdirSync(agentsDir, { recursive: true });
   }
 
   const agents = [
@@ -650,6 +650,9 @@ You can invoke specialized agents for different parts of the development lifecyc
 When the user asks you to act as a specific SAM agent, adopt the persona and follow the instructions for that agent.
 These agents have access to project documentation, design standards, and other agent definitions in the references folder.
 
+### Instructions Folder
+All SAM integration files are located in: [copilot-integration/](copilot-integration/)
+
 `;
 
   for (const agent of agents) {
@@ -657,14 +660,14 @@ These agents have access to project documentation, design standards, and other a
     if (fs.existsSync(agentPath)) {
       const content = fs.readFileSync(agentPath, 'utf8');
       const agentFile = `sam-${agent.name.replace('sam-', '')}.md`;
-      const agentDestPath = path.join(copilotDir, agentFile);
+      const agentDestPath = path.join(agentsDir, agentFile);
 
       fs.writeFileSync(agentDestPath, content);
 
       instructionsContent += `### ${agent.display}
 - **Invocation**: "Act as ${agent.name}" or "Use the ${agent.display} persona"
 - **Role**: ${agent.description}
-- **Detailed Instructions**: [.github/copilot/${agentFile}](.github/copilot/${agentFile})
+- **Detailed Instructions**: [copilot-integration/agents/${agentFile}](copilot-integration/agents/${agentFile})
 
 `;
       skillsCount++;
@@ -675,7 +678,7 @@ These agents have access to project documentation, design standards, and other a
   const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
   if (fs.existsSync(workflowPath)) {
     const workflowContent = fs.readFileSync(workflowPath, 'utf8');
-    fs.writeFileSync(path.join(copilotDir, 'sam-tdd-pipeline.md'), workflowContent);
+    fs.writeFileSync(path.join(agentsDir, 'sam-tdd-pipeline.md'), workflowContent);
 
     instructionsContent += `## SAM Autonomous TDD Pipeline
 Transform a PRD into working, tested code using specialized agents.
@@ -689,14 +692,17 @@ Transform a PRD into working, tested code using specialized agents.
    - **REFACTOR**: sam-argus (Reviewer)
 4. **Finalize**: sam-sage (Technical Writer)
 
-- **Detailed Workflow**: [.github/copilot/sam-tdd-pipeline.md](.github/copilot/sam-tdd-pipeline.md)
+- **Detailed Workflow**: [copilot-integration/agents/sam-tdd-pipeline.md](copilot-integration/agents/sam-tdd-pipeline.md)
 `;
   }
 
   // Copy common documentation references
+  if (!fs.existsSync(referencesDir)) {
+    fs.mkdirSync(referencesDir, { recursive: true });
+  }
   copyDocumentationToReferences(samDir, targetDir, referencesDir, 'copilot');
 
-  fs.writeFileSync(path.join(githubDir, 'copilot-instructions.md'), instructionsContent);
+  fs.writeFileSync(path.join(copilotDir, 'instructions.md'), instructionsContent);
   skillsCount++;
 
   return skillsCount;
@@ -716,7 +722,7 @@ async function promptPlatform() {
     log('    2) Cursor        ' + DIM + '(.cursor/rules/)' + RESET);
     log('    3) Antigravity   ' + DIM + '(.agent/skills/)' + RESET);
     log('    4) Gemini CLI    ' + DIM + '(.gemini/skills/)' + RESET);
-    log('    5) GitHub Copilot ' + DIM + '(.github/copilot-instructions.md)' + RESET);
+    log('    5) GitHub Copilot ' + DIM + '(copilot-integration/)' + RESET);
     log('    6) All           ' + DIM + '(install for all platforms)' + RESET);
     log('');
 
@@ -807,7 +813,7 @@ function install(platform, targetDir) {
   // Install GitHub Copilot integration
   if (platform === 'copilot' || platform === 'all') {
     const copilotSkillsCount = generateCopilotSkills(samDir, targetDir);
-    log(`  ✓ Generated .github/copilot/ (${copilotSkillsCount} files)`, GREEN);
+    log(`  ✓ Generated copilot-integration/ (${copilotSkillsCount} files)`, GREEN);
   }
 
   log('\n' + BOLD + '  Installation complete!' + RESET + '\n');
@@ -890,10 +896,10 @@ function install(platform, targetDir) {
     log('  Gemini CLI will auto-detect skills in .gemini/skills/', YELLOW);
   }
   if (platform === 'copilot' || platform === 'all') {
-    log('  GitHub Copilot will auto-detect instructions in .github/copilot-instructions.md', YELLOW);
+    log('  Point GitHub Copilot to copilot-integration/instructions.md for context.', YELLOW);
   }
   log('');
-}
+  }
 
 async function main() {
   const args = process.argv.slice(2);

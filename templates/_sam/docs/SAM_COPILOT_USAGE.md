@@ -6,7 +6,7 @@ This guide provides specific instructions and example prompts for using the **SA
 
 ## 1. Core Concept: Custom Instructions
 
-In GitHub Copilot, SAM agents are supported via repository-wide custom instructions in `.github/copilot-instructions.md`. This file tells Copilot about the available agents and where to find their detailed definitions in the `.github/copilot/` directory.
+In GitHub Copilot, SAM agents are supported via instructions in `copilot-integration/instructions.md`. This file tells Copilot about the available agents and where to find their detailed definitions in the `copilot-integration/agents/` directory.
 
 ---
 
@@ -51,13 +51,13 @@ You can call agents individually for specific tasks.
 
 ## 5. Agent References
 
-Every agent has access to a `references/` folder at `.github/copilot/references/`. This contains:
+Every agent has access to a `references/` folder at `copilot-integration/references/`. This contains:
 - **`docs/`**: Core guides including this usage guide.
 - **`agents/`**: Definitions for all agents.
 - **`workflow.md`**: The TDD pipeline definition.
 - **`design-standards.md`**: Project styling requirements.
 
-**Tip:** If Copilot seems to forget its role, you can say: "Check your instructions in `.github/copilot-instructions.md` and the agent definitions in `.github/copilot/`."
+**Tip:** If Copilot seems to forget its role, you can say: "Check your instructions in `copilot-integration/instructions.md` and the agent definitions in `copilot-integration/agents/`."
 
 ---
 

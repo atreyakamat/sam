@@ -14,15 +14,14 @@ node sam/bin/cli.js --platform copilot
 
 ### What happens?
 - It creates a `_sam/` directory containing all agent personas and TDD workflows.
-- It generates GitHub-specific instructions in `.github/copilot-instructions.md`.
-- It creates a `.github/copilot/` directory with detailed agent definitions.
-- GitHub Copilot Chat will automatically detect these instructions.
+- It generates a `copilot-integration/` directory containing all SAM instructions, agent definitions, and references.
+- `copilot-integration/instructions.md` serves as the primary entry point for Copilot.
 
 ---
 
 ## 2. Meet the SAM Agent Team
 
-You can call upon specific agents by asking Copilot to "act as" them.
+You can call upon specific agents by asking Copilot to "act as" them. Point Copilot to `copilot-integration/instructions.md` if it needs context.
 
 | Agent | Invocation | Role | When to use |
 | :--- | :--- | :--- | :--- |
@@ -69,6 +68,6 @@ If you don't want the full pipeline, you can use individual agents for specific 
 ---
 
 ## 5. Tips for Success
-- **Reference the Instructions**: If Copilot seems to forget its role, remind it: "Refer to the instructions in .github/copilot-instructions.md".
+- **Reference the Instructions**: If Copilot seems to forget its role, remind it: "Refer to the instructions in copilot-integration/instructions.md".
 - **Be Explicit**: Copilot works best when you explicitly tell it which agent persona to adopt.
 - **Customization**: You can modify the agent personas in `_sam/agents/` to better fit your project's specific coding style.

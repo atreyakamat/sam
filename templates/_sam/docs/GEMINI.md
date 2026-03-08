@@ -72,7 +72,7 @@ All development should follow the autonomous TDD pipeline:
 - **Gemini CLI**: Uses `.gemini/skills/` to define agent skills. Use `activate_skill('sam-orchestrator')` to start the pipeline.
 - **Claude Code**: Uses `.claude/commands/sam/` to define `/sam:` commands.
 - **Cursor**: Uses `.cursor/rules/` to define `@agent` rules (generated as `.mdc` files).
-- **GitHub Copilot**: Uses `.github/copilot-instructions.md` to define repository-wide instructions.
+- **GitHub Copilot**: Uses `copilot-integration/instructions.md` to define instructions and agent personas.
 - **Antigravity**: Uses `.agent/skills/` to define `/sam-` skills.
 
 ### Contribution Guidelines

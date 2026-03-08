@@ -28,7 +28,7 @@ npx sam-agents --platform all          # All platforms
 |----------|-----------------|--------------|
 | **Claude Code** | `npx sam-agents --platform claude` | `/sam:` commands |
 | **Cursor** | `npx sam-agents --platform cursor` | `@agent` mentions |
-| **GitHub Copilot**| `npx sam-agents --platform copilot`| Chat Instructions |
+| **GitHub Copilot**| `npx sam-agents --platform copilot`| `copilot-integration/` |
 | **Antigravity** | `npx sam-agents --platform antigravity` | `/sam-` skills |
 
 ## Why SAM?
@@ -84,7 +84,7 @@ your-project/
 │   └── core/workflows/        # TDD pipeline workflow
 ├── .claude/commands/sam/      # Claude Code skills
 ├── .cursor/rules/             # Cursor rules
-├── .github/copilot/           # GitHub Copilot instructions
+├── copilot-integration/       # GitHub Copilot instructions
 └── .agent/skills/             # Antigravity skills
 ```
 
