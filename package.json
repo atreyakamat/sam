@@ -36,6 +36,6 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "node ../verify_sam_gemini.js"
+    "test": "node scripts/verify-gemini.js"
   }
 }
