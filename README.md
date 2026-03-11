@@ -4,15 +4,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://img.shields.io/npm/dm/sam-agents.svg)](https://www.npmjs.com/package/sam-agents)
 
-**Autonomous TDD agent system for Claude Code, Cursor, GitHub Copilot, and Antigravity.**
+**Autonomous TDD agent system with 27+ specialized domain experts.**
 
 SAM orchestrates a team of specialized AI agents that transform your PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR).
 
 ## Quick Start
 
 ```bash
-# Interactive mode (choose your platform)
+# NEW: Interactive TUI mode (choose your platform with arrow keys)
 npx sam-agents
+```
+
+## Documentation
+- **[Specialist Agent Guide](docs/SAM_AGENT_GUIDE.md)** - Learn about the 27+ domain-specific agents.
+- **[TDD Pipeline Guide](docs/TDD_PIPELINE.md)** - Details on the autonomous TDD loop.
 
 # Or specify platform directly
 npx sam-agents --platform claude       # Claude Code
