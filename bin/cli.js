@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const prompts = require('prompts');
 
 const CYAN = '\x1b[36m';
 const GREEN = '\x1b[32m';
@@ -13,6 +14,35 @@ const BOLD = '\x1b[1m';
 const DIM = '\x1b[2m';
 
 const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'];
+
+const ALL_AGENTS = [
+  { name: 'sam', file: 'core/agents/sam-master.md', display: 'SAM Orchestrator', description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow' },
+  { name: 'atlas', file: 'agents/architect.md', display: 'Atlas - System Architect', description: 'Architecture review, PRD validation, technical design, system design decisions' },
+  { name: 'titan', file: 'agents/test.md', display: 'Titan - Test Architect', description: 'Write failing tests, RED phase of TDD, test architecture, acceptance criteria validation' },
+  { name: 'dyna', file: 'agents/dev.md', display: 'Dyna - Developer', description: 'Implement code to pass tests, GREEN phase of TDD, minimal implementation' },
+  { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer', description: 'Code review, REFACTOR phase of TDD, quality improvement, best practices' },
+  { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer', description: 'Generate documentation, technical writing, API docs, README creation' },
+  { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer', description: 'UX validation, user experience review, interface design feedback' },
+  { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer', description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns' },
+  { name: 'react', file: 'agents/react-expert.md', display: 'React Specialist', description: 'Domain expert in React.js, React Hooks, Context, State Management' },
+  { name: 'next', file: 'agents/next-architect.md', display: 'Next.js Architect', description: 'Deep expertise in Next.js App Router, Server Components, SSR/SSG' },
+  { name: 'db', file: 'agents/db-architect.md', display: 'Database Architect', description: 'Expert in schema design, complex querying, normalization, indexing, ORMs' },
+  { name: 'ops', file: 'agents/devops-engineer.md', display: 'DevOps Engineer', description: 'Specialist in CI/CD pipelines, Docker containerization, Terraform' },
+  { name: 'sec', file: 'agents/security-auditor.md', display: 'Security Auditor', description: 'Domain expert in identifying vulnerabilities, mitigating OWASP Top 10 risks' },
+  { name: 'python', file: 'agents/python-expert.md', display: 'Python Specialist', description: 'Expert in Python 3, FastAPI, Django, Flask, and Pydantic' },
+  { name: 'go', file: 'agents/go-specialist.md', display: 'Go Specialist', description: 'Domain expert in Go (Golang), concurrency, gRPC, and microservices' },
+  { name: 'mobile', file: 'agents/mobile-architect.md', display: 'Mobile Architect', description: 'Expert in Flutter, React Native, and native mobile development' },
+  { name: 'ai', file: 'agents/ai-engineer.md', display: 'AI Engineer', description: 'Domain expert in LLM integration, RAG, and vector databases' },
+  { name: 'a11y', file: 'agents/a11y-expert.md', display: 'Accessibility Expert', description: 'Expert in WCAG, ARIA roles, and digital inclusion' },
+  { name: 'perf', file: 'agents/perf-analyst.md', display: 'Performance Analyst', description: 'Domain expert in Core Web Vitals and browser optimization' },
+  { name: 'cloud', file: 'agents/cloud-architect.md', display: 'Cloud Architect', description: 'Expert in multi-cloud infrastructure, AWS, Azure, and GCP' },
+  { name: 'e2e', file: 'agents/e2e-specialist.md', display: 'E2E Specialist', description: 'Domain expert in full-system testing with Playwright & Cypress' },
+  { name: 'api', file: 'agents/api-designer.md', display: 'API Designer', description: 'Expert in API contract design, versioning, and developer experience' },
+  { name: 'styling', file: 'agents/styling-virtuoso.md', display: 'Styling Virtuoso', description: 'Domain expert in Tailwind CSS, CSS-in-JS, and animations' },
+  { name: 'rust', file: 'agents/rust-engineer.md', display: 'Rust Engineer', description: 'Expert in systems programming, WebAssembly, and high-performance Rust' },
+  { name: 'serverless', file: 'agents/serverless-specialist.md', display: 'Serverless Specialist', description: 'Expert in AWS Lambda, Cloudflare Workers, and Edge runtimes' },
+  { name: 'i18n', file: 'agents/i18n-expert.md', display: 'Localization Expert', description: 'Domain expert in internationalization, localization, and RTL support' }
+];
 
 function log(message, color = RESET) {
   console.log(`${color}${message}${RESET}`);
@@ -133,16 +163,11 @@ function generateCursorRules(samDir, targetDir) {
     fs.mkdirSync(cursorDir, { recursive: true });
   }
 
-  const agents = [
-    { name: 'sam', file: 'core/agents/sam-master.md', display: 'SAM Orchestrator' },
-    { name: 'atlas', file: 'agents/architect.md', display: 'Atlas - System Architect' },
-    { name: 'dyna', file: 'agents/dev.md', display: 'Dyna - Developer' },
-    { name: 'titan', file: 'agents/test.md', display: 'Titan - Test Architect' },
-    { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer' },
-    { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer' },
-    { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' },
-    { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer' }
-  ];
+    const agents = ALL_AGENTS.map(a => ({
+    name: a.name,
+    file: a.file,
+    display: a.display
+  }));
 
   let rulesCount = 0;
 
@@ -233,56 +258,12 @@ function generateAntigravitySkills(samDir, targetDir) {
     fs.mkdirSync(skillsDir, { recursive: true });
   }
 
-  const agents = [
-    {
-      name: 'sam-orchestrator',
-      file: 'core/agents/sam-master.md',
-      display: 'SAM Orchestrator',
-      description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow'
-    },
-    {
-      name: 'sam-atlas',
-      file: 'agents/architect.md',
-      display: 'Atlas - System Architect',
-      description: 'Architecture review, PRD validation, technical design, system design decisions'
-    },
-    {
-      name: 'sam-titan',
-      file: 'agents/test.md',
-      display: 'Titan - Test Architect',
-      description: 'Write failing tests, RED phase of TDD, test architecture, acceptance criteria validation'
-    },
-    {
-      name: 'sam-dyna',
-      file: 'agents/dev.md',
-      display: 'Dyna - Developer',
-      description: 'Implement code to pass tests, GREEN phase of TDD, minimal implementation'
-    },
-    {
-      name: 'sam-argus',
-      file: 'agents/reviewer.md',
-      display: 'Argus - Code Reviewer',
-      description: 'Code review, REFACTOR phase of TDD, quality improvement, best practices'
-    },
-    {
-      name: 'sam-sage',
-      file: 'agents/tech-writer.md',
-      display: 'Sage - Technical Writer',
-      description: 'Generate documentation, technical writing, API docs, README creation'
-    },
-    {
-      name: 'sam-iris',
-      file: 'agents/ux-designer.md',
-      display: 'Iris - UX Designer',
-      description: 'UX validation, user experience review, interface design feedback'
-    },
-    {
-      name: 'sam-cosmo',
-      file: 'agents/css-reviewer.md',
-      display: 'Cosmo - CSS Consistency Reviewer',
-      description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
-    }
-  ];
+    const agents = ALL_AGENTS.map(a => ({
+    name: a.name === 'sam' ? 'sam-orchestrator' : `sam-${a.name}`,
+    file: a.file,
+    display: a.display,
+    description: a.description
+  }));
 
   let skillsCount = 0;
 
@@ -410,56 +391,12 @@ function generateGeminiSkills(samDir, targetDir) {
     fs.mkdirSync(skillsDir, { recursive: true });
   }
 
-  const agents = [
-    {
-      name: 'sam-orchestrator',
-      file: 'core/agents/sam-master.md',
-      display: 'SAM Orchestrator',
-      description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow'
-    },
-    {
-      name: 'sam-atlas',
-      file: 'agents/architect.md',
-      display: 'Atlas - System Architect',
-      description: 'Architecture review, PRD validation, technical design, system design decisions'
-    },
-    {
-      name: 'sam-titan',
-      file: 'agents/test.md',
-      display: 'Titan - Test Architect',
-      description: 'Write failing tests, RED phase of TDD, test architecture, acceptance criteria validation'
-    },
-    {
-      name: 'sam-dyna',
-      file: 'agents/dev.md',
-      display: 'Dyna - Developer',
-      description: 'Implement code to pass tests, GREEN phase of TDD, minimal implementation'
-    },
-    {
-      name: 'sam-argus',
-      file: 'agents/reviewer.md',
-      display: 'Argus - Code Reviewer',
-      description: 'Code review, REFACTOR phase of TDD, quality improvement, best practices'
-    },
-    {
-      name: 'sam-sage',
-      file: 'agents/tech-writer.md',
-      display: 'Sage - Technical Writer',
-      description: 'Generate documentation, technical writing, API docs, README creation'
-    },
-    {
-      name: 'sam-iris',
-      file: 'agents/ux-designer.md',
-      display: 'Iris - UX Designer',
-      description: 'UX validation, user experience review, interface design feedback'
-    },
-    {
-      name: 'sam-cosmo',
-      file: 'agents/css-reviewer.md',
-      display: 'Cosmo - CSS Consistency Reviewer',
-      description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
-    }
-  ];
+    const agents = ALL_AGENTS.map(a => ({
+    name: a.name === 'sam' ? 'sam-orchestrator' : `sam-${a.name}`,
+    file: a.file,
+    display: a.display,
+    description: a.description
+  }));
 
   let skillsCount = 0;
 
@@ -589,56 +526,12 @@ function generateCopilotSkills(samDir, targetDir) {
     fs.mkdirSync(agentsDir, { recursive: true });
   }
 
-  const agents = [
-    {
-      name: 'sam-orchestrator',
-      file: 'core/agents/sam-master.md',
-      display: 'SAM Orchestrator',
-      description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow'
-    },
-    {
-      name: 'sam-atlas',
-      file: 'agents/architect.md',
-      display: 'Atlas - System Architect',
-      description: 'Architecture review, PRD validation, technical design, system design decisions'
-    },
-    {
-      name: 'sam-titan',
-      file: 'agents/test.md',
-      display: 'Titan - Test Architect',
-      description: 'Write failing tests, RED phase of TDD, test architecture, acceptance criteria validation'
-    },
-    {
-      name: 'sam-dyna',
-      file: 'agents/dev.md',
-      display: 'Dyna - Developer',
-      description: 'Implement code to pass tests, GREEN phase of TDD, minimal implementation'
-    },
-    {
-      name: 'sam-argus',
-      file: 'agents/reviewer.md',
-      display: 'Argus - Code Reviewer',
-      description: 'Code review, REFACTOR phase of TDD, quality improvement, best practices'
-    },
-    {
-      name: 'sam-sage',
-      file: 'agents/tech-writer.md',
-      display: 'Sage - Technical Writer',
-      description: 'Generate documentation, technical writing, API docs, README creation'
-    },
-    {
-      name: 'sam-iris',
-      file: 'agents/ux-designer.md',
-      display: 'Iris - UX Designer',
-      description: 'UX validation, user experience review, interface design feedback'
-    },
-    {
-      name: 'sam-cosmo',
-      file: 'agents/css-reviewer.md',
-      display: 'Cosmo - CSS Consistency Reviewer',
-      description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
-    }
-  ];
+    const agents = ALL_AGENTS.map(a => ({
+    name: a.name === 'sam' ? 'sam-orchestrator' : `sam-${a.name}`,
+    file: a.file,
+    display: a.display,
+    description: a.description
+  }));
 
   let skillsCount = 0;
   let instructionsContent = `# SAM (Smart Agent Manager) - GitHub Copilot Instructions
