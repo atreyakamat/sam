@@ -6,7 +6,7 @@ This file provides guidelines for agentic coding agents operating in this reposi
 
 ## Project Overview
 
-SAM (Smart Agent Manager) is an autonomous TDD agent system that generates agent configurations for Claude Code, Cursor IDE, Antigravity, and Gemini CLI. The project consists of:
+SAM (Smart Agent Manager) is an autonomous TDD agent system that generates agent configurations for Claude Code, Cursor IDE, Antigravity, Gemini CLI, GitHub Copilot, OpenClaw, and ZeroClaw. The project consists of:
 - **CLI** (`bin/cli.js`) - Node.js CLI tool that installs agent configurations
 - **Templates** (`templates/`) - Agent definitions in markdown format
 - **Shared configs** (`_sam/`) - Agent definitions used across all platforms
@@ -26,6 +26,9 @@ node bin/cli.js --platform claude ./test-project
 node bin/cli.js --platform cursor ./test-project
 node bin/cli.js --platform antigravity ./test-project
 node bin/cli.js --platform gemini ./test-project
+node bin/cli.js --platform copilot ./test-project
+node bin/cli.js --platform openclaw ./test-project
+node bin/cli.js --platform zeroclaw ./test-project
 node bin/cli.js --platform all ./test-project
 
 # Test with target directory
@@ -41,13 +44,16 @@ Formal test suites are available for specific platforms:
 Manual testing is done by:
 1. Creating a test directory: `mkdir test-project`
 2. Running the CLI: `node bin/cli.js --platform <platform> ./test-project`
-3. Verifying output files:
+3.    Verifying output files:
    ```bash
    ls -la ./test-project/_sam
    ls -la ./test-project/.claude/commands/sam   # for Claude Code
    ls -la ./test-project/.cursor/rules/         # for Cursor
    ls -la ./test-project/.agent/skills/         # for Antigravity
    ls -la ./test-project/.gemini/skills/        # for Gemini CLI
+   ls -la ./test-project/copilot-integration/   # for GitHub Copilot
+   ls -la ./test-project/.openclaw/workspace/skills/  # for OpenClaw
+   ls -la ./test-project/.zeroclaw/skills/      # for ZeroClaw
    ```
 
 ### Publishing
@@ -265,6 +271,44 @@ Skills are generated in `bin/cli.js:generateGeminiSkills()` with directory struc
 ```
 
 Commands are copied from `templates/.gemini/commands/` to `.gemini/commands/`.
+
+---
+
+## GitHub Copilot Integration Format
+
+Instructions are generated in `copilot-integration/instructions.md` with agent definitions in `copilot-integration/agents/`:
+
+```
+copilot-integration/
+├── instructions.md         # Main instructions file
+└── agents/
+    ├── sam-orchestrator.md
+    ├── sam-atlas.md
+    ├── sam-titan.md
+    └── ...
+```
+
+---
+
+## OpenClaw Skills Format
+
+Skills are generated in `bin/cli.js:generateOpenClawSkills()` with directory structure:
+
+```
+.openclaw/workspace/skills/<skill-name>/
+└── SKILL.md              # Skill definition with YAML frontmatter
+```
+
+---
+
+## ZeroClaw Skills Format
+
+Skills are generated in `bin/cli.js:generateZeroClawSkills()` with directory structure:
+
+```
+.zeroclaw/skills/<skill-name>/
+└── SKILL.md              # Skill definition with YAML frontmatter
+```
 
 ---
 
