@@ -13,7 +13,7 @@ const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
 const DIM = '\x1b[2m';
 
-const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'];
+const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'openclaw', 'zeroclaw', 'all'];
 
 const ALL_AGENTS = [
   { name: 'sam', file: 'core/agents/sam-master.md', display: 'SAM Orchestrator', description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow' },
@@ -88,13 +88,15 @@ function showHelp() {
   log('  Autonomous TDD Agent System\n', CYAN);
   log('  Usage: npx sam-agents [options] [target-directory]\n');
   log('  Options:');
-  log('    --platform <name>  Target platform: claude, cursor, antigravity, gemini, copilot, all');
+  log('    --platform <name>  Target platform: claude, cursor, antigravity, gemini, copilot, openclaw, zeroclaw, all');
   log('    --help, -h         Show this help message');
   log('    --version, -v      Show version number\n');
   log('  Examples:');
   log('    npx sam-agents                         Interactive mode');
   log('    npx sam-agents --platform cursor       Install for Cursor');
   log('    npx sam-agents --platform copilot      Install for GitHub Copilot');
+  log('    npx sam-agents --platform openclaw     Install for OpenClaw');
+  log('    npx sam-agents --platform zeroclaw     Install for ZeroClaw');
   log('    npx sam-agents --platform all          Install for all platforms');
   log('    npx sam-agents ./myapp                 Install in ./myapp directory\n');
   log('  Supported Platforms:');
@@ -601,6 +603,220 @@ Transform a PRD into working, tested code using specialized agents.
   return skillsCount;
 }
 
+function generateOpenClawSkills(samDir, targetDir) {
+  const openclawDir = path.join(targetDir, '.openclaw', 'workspace', 'skills');
+
+  if (!fs.existsSync(openclawDir)) {
+    fs.mkdirSync(openclawDir, { recursive: true });
+  }
+
+  const agents = ALL_AGENTS.map(a => ({
+    name: a.name === 'sam' ? 'sam-orchestrator' : `sam-${a.name}`,
+    file: a.file,
+    display: a.display,
+    description: a.description
+  }));
+
+  let skillsCount = 0;
+
+  for (const agent of agents) {
+    const agentPath = path.join(samDir, agent.file);
+    if (fs.existsSync(agentPath)) {
+      const content = fs.readFileSync(agentPath, 'utf8');
+      const skillDir = path.join(openclawDir, agent.name);
+
+      if (!fs.existsSync(skillDir)) {
+        fs.mkdirSync(skillDir, { recursive: true });
+      }
+
+      const skillContent = `---
+name: ${agent.name}
+description: ${agent.description}
+---
+
+# ${agent.display}
+
+When the user mentions "@${agent.name}" or asks for ${agent.display.toLowerCase()}, adopt this persona:
+
+${content}
+
+## Invocation
+To use this agent, mention @${agent.name} in your message or say "Use the ${agent.display} persona".
+`;
+
+      fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent);
+      skillsCount++;
+    }
+  }
+
+  const pipelineDir = path.join(openclawDir, 'sam-tdd-pipeline');
+  if (!fs.existsSync(pipelineDir)) {
+    fs.mkdirSync(pipelineDir, { recursive: true });
+  }
+
+  const pipelineSkill = `---
+name: sam-tdd-pipeline
+description: Autonomous TDD pipeline - transform PRD into working tested code using RED-GREEN-REFACTOR methodology
+---
+
+# SAM Autonomous TDD Pipeline
+
+This skill orchestrates a complete TDD development workflow using specialized SAM agents.
+
+## When to Use
+Invoke this skill when you want to:
+- Transform a PRD into working, tested code
+- Follow strict TDD methodology (RED-GREEN-REFACTOR)
+- Use autonomous AI agents for development
+
+## The Pipeline
+
+### Phase 1: Validate PRD
+- @sam-atlas reviews technical feasibility
+- @sam-iris validates UX requirements
+
+### Phase 2: Generate Stories
+- Break PRD into epics and user stories
+- Create detailed acceptance criteria
+
+### Phase 3: TDD Loop (for each story)
+1. **RED**: @sam-titan writes failing tests based on acceptance criteria
+2. **GREEN**: @sam-dyna writes minimal code to make tests pass
+3. **REFACTOR**: @sam-argus reviews and improves code quality
+4. **UI**: @sam-iris reviews layout and fixes alignment (web apps only)
+5. **CSS**: @sam-cosmo reviews styling consistency (web apps only)
+
+### Phase 4: Complete
+- @sam-sage generates documentation
+- Final review and handoff
+
+## Usage
+Mention @sam-tdd with a PRD or feature description to start the pipeline.
+
+## Available Agents
+- @sam-orchestrator - Pipeline coordinator
+- @sam-atlas - Architect (PRD validation, technical design)
+- @sam-titan - Test Architect (RED phase)
+- @sam-dyna - Developer (GREEN phase)
+- @sam-argus - Code Reviewer (REFACTOR phase)
+- @sam-cosmo - CSS Consistency Reviewer (web apps only)
+- @sam-sage - Technical Writer (documentation)
+- @sam-iris - UX Designer (UX validation)
+`;
+
+  fs.writeFileSync(path.join(pipelineDir, 'SKILL.md'), pipelineSkill);
+  skillsCount++;
+
+  return skillsCount;
+}
+
+function generateZeroClawSkills(samDir, targetDir) {
+  const zeroclawDir = path.join(targetDir, '.zeroclaw', 'skills');
+
+  if (!fs.existsSync(zeroclawDir)) {
+    fs.mkdirSync(zeroclawDir, { recursive: true });
+  }
+
+  const agents = ALL_AGENTS.map(a => ({
+    name: a.name === 'sam' ? 'sam-orchestrator' : `sam-${a.name}`,
+    file: a.file,
+    display: a.display,
+    description: a.description
+  }));
+
+  let skillsCount = 0;
+
+  for (const agent of agents) {
+    const agentPath = path.join(samDir, agent.file);
+    if (fs.existsSync(agentPath)) {
+      const content = fs.readFileSync(agentPath, 'utf8');
+      const skillDir = path.join(zeroclawDir, agent.name);
+
+      if (!fs.existsSync(skillDir)) {
+        fs.mkdirSync(skillDir, { recursive: true });
+      }
+
+      const skillContent = `---
+name: ${agent.name}
+description: ${agent.description}
+---
+
+# ${agent.display}
+
+When the user mentions "${agent.name}" or asks for ${agent.display.toLowerCase()}, adopt this persona:
+
+${content}
+
+## Invocation
+To use this agent, mention "${agent.name}" in your message or say "Use the ${agent.display} persona".
+`;
+
+      fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent);
+      skillsCount++;
+    }
+  }
+
+  const pipelineDir = path.join(zeroclawDir, 'sam-tdd-pipeline');
+  if (!fs.existsSync(pipelineDir)) {
+    fs.mkdirSync(pipelineDir, { recursive: true });
+  }
+
+  const pipelineSkill = `---
+name: sam-tdd-pipeline
+description: Autonomous TDD pipeline - transform PRD into working tested code using RED-GREEN-REFACTOR methodology
+---
+
+# SAM Autonomous TDD Pipeline
+
+This skill orchestrates a complete TDD development workflow using specialized SAM agents.
+
+## When to Use
+Invoke this skill when you want to:
+- Transform a PRD into working, tested code
+- Follow strict TDD methodology (RED-GREEN-REFACTOR)
+- Use autonomous AI agents for development
+
+## The Pipeline
+
+### Phase 1: Validate PRD
+- sam-atlas reviews technical feasibility
+- sam-iris validates UX requirements
+
+### Phase 2: Generate Stories
+- Break PRD into epics and user stories
+- Create detailed acceptance criteria
+
+### Phase 3: TDD Loop (for each story)
+1. **RED**: sam-titan writes failing tests based on acceptance criteria
+2. **GREEN**: sam-dyna writes minimal code to make tests pass
+3. **REFACTOR**: sam-argus reviews and improves code quality
+4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
+5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
+
+### Phase 4: Complete
+- sam-sage generates documentation
+- Final review and handoff
+
+## Usage
+Start with "sam-tdd" or describe a PRD or feature to begin the autonomous TDD pipeline.
+
+## Available Agents
+- sam-orchestrator - Pipeline coordinator
+- sam-atlas - Architect (PRD validation, technical design)
+- sam-titan - Test Architect (RED phase)
+- sam-dyna - Developer (GREEN phase)
+- sam-argus - Code Reviewer (REFACTOR phase)
+- sam-cosmo - CSS Consistency Reviewer (web apps only)
+- sam-sage - Technical Writer (documentation)
+- sam-iris - UX Designer (UX validation)
+`;
+
+  fs.writeFileSync(path.join(pipelineDir, 'SKILL.md'), pipelineSkill);
+  skillsCount++;
+
+  return skillsCount;
+}
+
 async function promptPlatform() {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -616,10 +832,12 @@ async function promptPlatform() {
     log('    3) Antigravity   ' + DIM + '(.agent/skills/)' + RESET);
     log('    4) Gemini CLI    ' + DIM + '(.gemini/skills/)' + RESET);
     log('    5) GitHub Copilot ' + DIM + '(copilot-integration/)' + RESET);
-    log('    6) All           ' + DIM + '(install for all platforms)' + RESET);
+    log('    6) OpenClaw      ' + DIM + '(.openclaw/workspace/skills/)' + RESET);
+    log('    7) ZeroClaw     ' + DIM + '(.zeroclaw/skills/)' + RESET);
+    log('    8) All           ' + DIM + '(install for all platforms)' + RESET);
     log('');
 
-    rl.question('  Enter choice [1-6]: ', (answer) => {
+    rl.question('  Enter choice [1-8]: ', (answer) => {
       rl.close();
       const choice = answer.trim();
 
@@ -633,7 +851,11 @@ async function promptPlatform() {
         resolve('gemini');
       } else if (choice === '5' || choice.toLowerCase() === 'copilot') {
         resolve('copilot');
-      } else if (choice === '6' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
+      } else if (choice === '6' || choice.toLowerCase() === 'openclaw') {
+        resolve('openclaw');
+      } else if (choice === '7' || choice.toLowerCase() === 'zeroclaw') {
+        resolve('zeroclaw');
+      } else if (choice === '8' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
         resolve('all');
       } else if (choice === '') {
         // Default to gemini (since we're in gemini)
@@ -709,6 +931,18 @@ function install(platform, targetDir) {
     log(`  ✓ Generated copilot-integration/ (${copilotSkillsCount} files)`, GREEN);
   }
 
+  // Install OpenClaw integration
+  if (platform === 'openclaw' || platform === 'all') {
+    const openclawSkillsCount = generateOpenClawSkills(samDir, targetDir);
+    log(`  ✓ Generated .openclaw/workspace/skills/ (${openclawSkillsCount} skills)`, GREEN);
+  }
+
+  // Install ZeroClaw integration
+  if (platform === 'zeroclaw' || platform === 'all') {
+    const zeroclawSkillsCount = generateZeroClawSkills(samDir, targetDir);
+    log(`  ✓ Generated .zeroclaw/skills/ (${zeroclawSkillsCount} skills)`, GREEN);
+  }
+
   log('\n' + BOLD + '  Installation complete!' + RESET + '\n');
 
   if (platform === 'claude' || platform === 'all') {
@@ -776,6 +1010,32 @@ function install(platform, targetDir) {
     log('    "Run TDD pipeline"        - Full TDD Pipeline\n');
   }
 
+  if (platform === 'openclaw' || platform === 'all') {
+    log('  OpenClaw Skills (use @ mentions):', CYAN);
+    log('    @sam-orchestrator  - SAM Orchestrator');
+    log('    @sam-atlas         - Atlas (Architect)');
+    log('    @sam-dyna          - Dyna (Developer)');
+    log('    @sam-titan         - Titan (Test Architect)');
+    log('    @sam-argus         - Argus (Code Reviewer)');
+    log('    @sam-cosmo         - Cosmo (CSS Reviewer)');
+    log('    @sam-sage          - Sage (Tech Writer)');
+    log('    @sam-iris          - Iris (UX Designer)');
+    log('    @sam-tdd-pipeline  - Full TDD Pipeline\n');
+  }
+
+  if (platform === 'zeroclaw' || platform === 'all') {
+    log('  ZeroClaw Skills (use skill names):', CYAN);
+    log('    sam-orchestrator  - SAM Orchestrator');
+    log('    sam-atlas         - Atlas (Architect)');
+    log('    sam-dyna          - Dyna (Developer)');
+    log('    sam-titan         - Titan (Test Architect)');
+    log('    sam-argus         - Argus (Code Reviewer)');
+    log('    sam-cosmo         - Cosmo (CSS Reviewer)');
+    log('    sam-sage          - Sage (Tech Writer)');
+    log('    sam-iris          - Iris (UX Designer)');
+    log('    sam-tdd-pipeline  - Full TDD Pipeline\n');
+  }
+
   if (platform === 'claude' || platform === 'all') {
     log('  Restart Claude Code to load the new skills.', YELLOW);
   }
@@ -790,6 +1050,12 @@ function install(platform, targetDir) {
   }
   if (platform === 'copilot' || platform === 'all') {
     log('  Point GitHub Copilot to copilot-integration/instructions.md for context.', YELLOW);
+  }
+  if (platform === 'openclaw' || platform === 'all') {
+    log('  OpenClaw will auto-detect skills in .openclaw/workspace/skills/', YELLOW);
+  }
+  if (platform === 'zeroclaw' || platform === 'all') {
+    log('  ZeroClaw will auto-detect skills in .zeroclaw/skills/', YELLOW);
   }
   log('');
   }
